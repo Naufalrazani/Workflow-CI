@@ -4,6 +4,7 @@ import shutil
 import pandas as pd
 import mlflow
 import dagshub
+from mlflow.models import infer_signature
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, f1_score
@@ -45,15 +46,18 @@ if __name__ == "__main__":
         acc = accuracy_score(y_test, y_pred)
         f1 = f1_score(y_test, y_pred)
 
+        signature = infer_signature(X_test, y_pred)
+
         mlflow.log_param("n_estimators", args.n_estimators)
         mlflow.log_param("max_depth", args.max_depth)
         mlflow.log_metric("accuracy", acc)
         mlflow.log_metric("f1_score", f1)
         
-        mlflow.sklearn.log_model(model, "model")
+        mlflow.sklearn.log_model(sk_model=model, name="model", signature=signature)
         
         local_model_path = os.path.join(BASE_DIR, "mlflow_model_local")
         if os.path.exists(local_model_path):
             shutil.rmtree(local_model_path)
-        mlflow.sklearn.save_model(model, local_model_path)
+            
+        mlflow.sklearn.save_model(sk_model=model, path=local_model_path, signature=signature)
         print("Model lokal berhasil disimpan di:", local_model_path)
