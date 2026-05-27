@@ -21,6 +21,9 @@ if __name__ == "__main__":
     dagshub.init(repo_owner=REPO_OWNER, repo_name=REPO_NAME, mlflow=True)
     mlflow.set_experiment("Workflow-CI-Retraining")
 
+    if "MLFLOW_RUN_ID" in os.environ:
+        del os.environ["MLFLOW_RUN_ID"]
+
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     DATA_PATH = os.path.join(BASE_DIR, "dataset_clean/telco_cleaned.csv")
 
