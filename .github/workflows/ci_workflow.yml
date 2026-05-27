@@ -29,7 +29,7 @@ jobs:
           DAGSHUB_USER_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
         run: |
           cd MLProject
-          mlflow run . --env-manager=local --param-list n_estimators=100 max_depth=5
+          mlflow run . --env-manager=local -P n_estimators=100 -P max_depth=5
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
